@@ -3,19 +3,15 @@ from django.urls import reverse
 from django.utils.html import format_html
 from DBlogs.custom_site import custim_site
 from .models import Tag, Category, Post
-
+from DBlogs.base_admin import BaseOwnerAdmin
 
 # Register your models here.
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+@admin.register(Category,site=custim_site)
+class CategoryAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'owner', 'is_nav', 'post_count', 'created_time')
     fields = ('name', 'status', 'is_nav')
 
-    def save_model(self, request, obj, form, change):
-        '''通过给obj.owner赋值，自动设置owner'''
-        obj.owner = request.user
-        return super(CategoryAdmin, self).save_model(request, obj, form, change)
 
     def post_count(self, obj):
         return obj.post_set.count()
@@ -23,14 +19,11 @@ class CategoryAdmin(admin.ModelAdmin):
     post_count.short_description = '文章数量'
 
 
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+@admin.register(Tag,site=custim_site)
+class TagAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'owner', 'created_time')
     fields = ('name', 'status')
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(TagAdmin, self).save_model(request, obj, form, change)
 
 
 class CategoryOwnerFilter(admin.SimpleListFilter):
@@ -49,7 +42,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 
 @admin.register(Post,site=custim_site)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(BaseOwnerAdmin):
     list_display = (
         'title', 'category', 'status',
         'created_time', 'owner', 'operator'
@@ -99,10 +92,4 @@ class PostAdmin(admin.ModelAdmin):
             reverse('cus_admin:blog_post_change', args=(obj.id,))
         )
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(PostAdmin, self).save_model(request, obj, form, change)
 
-    def get_queryset(self, request):
-        qs = super(PostAdmin, self).get_queryset(request)
-        return qs.filter(owner=request.user)
