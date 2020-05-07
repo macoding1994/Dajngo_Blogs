@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
-
+from DBlogs.custom_site import custim_site
 from .models import Tag, Category, Post
 
 
@@ -48,7 +48,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(Post)
+@admin.register(Post,site=custim_site)
 class PostAdmin(admin.ModelAdmin):
     list_display = (
         'title', 'category', 'status',
@@ -96,7 +96,7 @@ class PostAdmin(admin.ModelAdmin):
     def operator(self, obj):
         return format_html(
             '<a href="{}">编辑</a>',
-            reverse('admin:blog_post_change', args=(obj.id,))
+            reverse('cus_admin:blog_post_change', args=(obj.id,))
         )
 
     def save_model(self, request, obj, form, change):
