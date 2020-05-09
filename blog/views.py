@@ -1,15 +1,33 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from blog.models import Tag,Post,Category
 
 
 def post_list(request, category_id=None, tag_id=None):
-    content = 'post_list  category_id:{}  tag_id:{}'.format(category_id, tag_id)
-    return HttpResponse(content)
-
+    if tag_id:
+        try:
+            tag = Tag.objects.get(id=tag_id)
+        except Exception as e:
+            post_list = []
+        else:
+            post_list = tag.post_set.filter(status=Post.STATUS_NORMAL)
+    else:
+        post_list = Post.objects.filter(status=Post.STATUS_NORMAL)
+        if category_id:
+            post_list = post_list.filter(category_id=category_id)
+    # N + 1 测试demo
+    # post_list = Post.objects.all().select_related('owner','category')
+    # for post in post_list:
+    #     print(post.id)
+    return render(request,'list.html',context={'post_list':post_list})
 
 def links(request):
     return HttpResponse('links')
 
 
 def detall(request, post_id=None):
-    return HttpResponse('detall {}'.format(post_id))
+    try:
+        post = Post.objects.get(id=post_id)
+    except Exception as e:
+        post = None
+    return render(request,'detall.html',context={'post':post})
