@@ -9,7 +9,7 @@ from DBlogs.base_admin import BaseOwnerAdmin
 
 @admin.register(Category,site=custim_site)
 class CategoryAdmin(BaseOwnerAdmin):
-    list_display = ('name', 'status', 'owner', 'is_nav', 'post_count', 'created_time')
+    list_display = ('name', 'status', 'owner', 'is_nav', 'post_count', 'created_time','id')
     fields = ('name', 'status', 'is_nav')
 
 
@@ -21,7 +21,7 @@ class CategoryAdmin(BaseOwnerAdmin):
 
 @admin.register(Tag,site=custim_site)
 class TagAdmin(BaseOwnerAdmin):
-    list_display = ('name', 'status', 'owner', 'created_time')
+    list_display = ('name', 'status', 'owner', 'created_time','id')
     fields = ('name', 'status')
 
 
@@ -45,7 +45,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 class PostAdmin(BaseOwnerAdmin):
     list_display = (
         'title', 'category', 'status',
-        'created_time', 'owner', 'operator'
+        'created_time', 'owner', 'operator','id'
     )
     list_display_links = []
 
