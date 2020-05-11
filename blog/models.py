@@ -33,10 +33,11 @@ class Category(models.Model):
             if category.is_nav:
                 nav_categories.append(category)
             else:
-                normal_categories.append(normal_categories)
+                normal_categories.append(category)
         # 以下代码产生两次IO操作
         # nav_categories = categories.filter(is_nav = True)
         # normal_categories = categories.filter(is_nav = False)
+        print(normal_categories)
         return {
             'navs':nav_categories,
             'categories':normal_categories,
@@ -122,4 +123,6 @@ class Post(models.Model):
 
     @staticmethod
     def host_post(cls):
-        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+        # 解决多余加载
+        # return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+        return cls.objects.only('id','title').filter(status=cls.STATUS_NORMAL).order_by('-pv')

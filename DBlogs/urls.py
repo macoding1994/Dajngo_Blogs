@@ -21,13 +21,13 @@ from .custom_site import custim_site
 from blog import views as blogviews
 
 urlpatterns = [
-    path('admin/', custim_site.urls),
-    path('super_admin/', admin.site.urls),
-    url(r'^$',blogviews.post_list),
-    url(r'^category/(?P<category_id>\d+)/$',blogviews.post_list),
-    url(r'^tag/(?P<tag_id>\d+)/$',blogviews.post_list),
-    url(r'^post/(?P<post_id>\d+).html$',blogviews.detall),
-    url(r'^links$',blogviews.links),
+    url(r'^$',blogviews.post_list,name='index'),
+    url(r'^category/(?P<category_id>\d+)/$',blogviews.post_list,name='category-list'),
+    url(r'^tag/(?P<tag_id>\d+)/$',blogviews.post_list,name='tag-list'),
+    url(r'^post/(?P<post_id>\d+).html$',blogviews.detall,name='post-detail'),
+    url(r'^links$',blogviews.links,name='links'),
+    path('admin/', custim_site.urls,name='admin'),
+    path('super_admin/', admin.site.urls,name='super-admin'),
 ]
 
 if settings.DEBUG:
