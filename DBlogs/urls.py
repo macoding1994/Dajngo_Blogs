@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
 from .custom_site import custim_site
 from blog import views as blogviews
 
@@ -28,3 +29,9 @@ urlpatterns = [
     url(r'^post/(?P<post_id>\d+).html$',blogviews.detall),
     url(r'^links$',blogviews.links),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
