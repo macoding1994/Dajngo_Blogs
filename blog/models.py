@@ -25,6 +25,7 @@ class Category(models.Model):
 
     @staticmethod
     def get_navs(cls):
+        # categories = cls.objects.filter(status=Category.STATUS_NORMAL).select_related('owner')
         categories = cls.objects.filter(status=Category.STATUS_NORMAL)
         nav_categories = []
         normal_categories = []
@@ -81,6 +82,8 @@ class Post(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name="标签")
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.DO_NOTHING)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+    pv = models.PositiveIntegerField(default=1,verbose_name='pv')
+    uv = models.PositiveIntegerField(default=1,verbose_name='uv')
 
 
     class Meta:
@@ -116,3 +119,7 @@ class Post(models.Model):
     @staticmethod
     def latest_postlist(cls):
         return cls.objects.filter(status=Post.STATUS_NORMAL)
+
+    @staticmethod
+    def host_post(cls):
+        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')

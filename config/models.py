@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+
 
 class Link(models.Model):
     STATUS_NORMAL = 1
@@ -62,3 +64,24 @@ class SideBar(models.Model):
     @staticmethod
     def get_all(cls):
         return cls.objects.filter(status=cls.STATUS_SHOW)
+
+    @property
+    def content_html(self):
+        '''直接渲染模板'''
+        from blog.models import Post
+        from comment.models import Comment
+
+        result = ''
+        if self.display_type == self.DISPLAY_HTML:
+            result = self.content
+        elif self.display_type == self.DISPLAY_LATEST:
+            context = {
+                'posts':Post.latest_postlist()
+            }
+            result = render_to_string('',context)
+        elif self.display_type == self.DISPLAY_HOT:
+            pass
+        elif self.display_type == self.DISPLAY_COMMENT:
+            pass
+
+        return result
