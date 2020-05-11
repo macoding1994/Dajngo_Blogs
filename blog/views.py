@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from blog.models import Tag,Post,Category
-
+from config.models import SideBar
 
 def post_list(request, category_id=None, tag_id=None):
     tag = None
@@ -17,7 +17,9 @@ def post_list(request, category_id=None, tag_id=None):
         'category':category,
         'tag':tag,
         'post_list':post_list,
+        'sidebars':SideBar.get_all(SideBar),
     }
+    context.update(Category.get_navs(Category))
     # N + 1 测试demo
     # post_list = Post.objects.all().select_related('owner','category')
     # for post in post_list:
@@ -33,4 +35,8 @@ def detall(request, post_id=None):
         post = Post.objects.get(id=post_id)
     except Exception as e:
         post = None
-    return render(request,'detall.html',context={'post':post})
+    context = {
+        'post':post
+    }
+    context.update(Category.get_navs(Category))
+    return render(request,'detall.html',context=context)
